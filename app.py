@@ -8,19 +8,19 @@ import numpy as np
 model = pickle.load(open("iris.pkl", "rb"))
 
 # -----------------------------
-# Page Title
+# Page Configuration
 # -----------------------------
-st.set_page_config(page_title="Iris ML Predictor", page_icon="🌸")
+st.set_page_config(page_title="Iris Flower Predictor", page_icon="🌸")
 
-st.title("🌸 Iris Flower Prediction App")
-st.write("Predict the species of an Iris flower using Machine Learning.")
+st.title("🌸 Iris Flower Species Prediction")
+st.write("Enter the flower measurements to predict the species.")
 
 st.markdown("---")
 
 # -----------------------------
-# User Input Section
+# Input Fields
 # -----------------------------
-st.header("Enter Flower Measurements")
+st.header("Input Flower Measurements")
 
 col1, col2 = st.columns(2)
 
@@ -57,7 +57,7 @@ with col2:
 st.markdown("---")
 
 # -----------------------------
-# Prediction Button
+# Prediction
 # -----------------------------
 if st.button("Predict Species"):
 
@@ -65,14 +65,26 @@ if st.button("Predict Species"):
 
     prediction = model.predict(features)
 
-    species = ["Setosa", "Versicolor", "Virginica"]
+    # Mapping for safety (if model returns numbers)
+    species_map = {
+        0: "Setosa",
+        1: "Versicolor",
+        2: "Virginica"
+    }
 
-    result = species[prediction[0]]
+    pred = prediction[0]
 
-    st.success(f"Predicted Iris Species: **{result}**")
+    # If prediction is number
+    if isinstance(pred, (int, np.integer)):
+        result = species_map[pred]
+    else:
+        # If prediction is already text
+        result = str(pred).replace("Iris-", "").capitalize()
+
+    st.success(f"Predicted Iris Species: {result}")
 
 # -----------------------------
 # Footer
 # -----------------------------
 st.markdown("---")
-st.write("Built with Python and Streamlit")
+st.write("Built using Python and Streamlit")
